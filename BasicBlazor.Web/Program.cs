@@ -1,5 +1,6 @@
 using BasicBlazor.Web.Components;
 using BasicBlazor.Web.Authorization;
+using BasicBlazor.Web.Extensions;
 using BasicBlazor.Data.Data;
 using BasicBlazor.Data.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -7,9 +8,10 @@ using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Discover extension assemblies early for proper routing and component registration
-// This must happen before AddRazorComponents() to ensure extension pages are included in routing table
-var extensionAssemblies = ExtensionLoader.GetExtensionAssemblies();
+// Discover extension early for proper routing and component registration
+// This must happen before service registration to ensure extension pages are included in routing table
+var extensionLoader = new ExtensionLoader();
+extensionLoader.DiscoverExtension();
 
 // Read session timeout configuration
 var sessionTimeoutMinutes = builder.Configuration.GetValue<int>("SessionTimeout:TimeoutMinutes", 5);
@@ -22,9 +24,17 @@ builder.Services.AddRazorComponents()
 // Add HttpContextAccessor for accessing HttpContext in components
 builder.Services.AddHttpContextAccessor();
 
-// Register all Data layer services with extension support (DbContext, repositories, business services)
-// This discovers and loads client extensions (BasicBlazor.Extension.*) if present
-builder.Services.AddDataServicesWithExtensions(builder.Configuration);
+// Register all Data layer services (DbContext, repositories, business services)
+builder.Services.AddDataServices(builder.Configuration);
+
+// Register extension loader as singleton
+builder.Services.AddSingleton(extensionLoader);
+
+// Call extension's ConfigureServices if present (extension registration happens in Web layer)
+if (extensionLoader.ActiveExtension != null)
+{
+    extensionLoader.ActiveExtension.ConfigureServices(builder.Services, builder.Configuration);
+}
 
 // Add authentication services
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -78,9 +88,19 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode()
-    .AddAdditionalAssemblies(extensionAssemblies);
+
+// Add extension assembly to routing if present (single extension model)
+if (extensionLoader.ActiveExtension != null)
+{
+    app.MapRazorComponents<App>()
+        .AddInteractiveServerRenderMode()
+        .AddAdditionalAssemblies(extensionLoader.ActiveExtension.ComponentAssembly);
+}
+else
+{
+    app.MapRazorComponents<App>()
+        .AddInteractiveServerRenderMode();
+}
 
 // Apply migrations and seed database on startup (PoC only - use explicit migrations in production)
 app.Services.ApplyDataMigrations();

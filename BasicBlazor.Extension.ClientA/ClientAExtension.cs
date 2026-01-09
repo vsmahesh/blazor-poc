@@ -28,12 +28,6 @@ public class ClientAExtension : IClientExtension
     public Assembly ComponentAssembly => typeof(ClientAExtension).Assembly;
 
     /// <summary>
-    /// Gets the path to the extension's page-access.json file.
-    /// This file REPLACES the base configuration and must include all pages.
-    /// </summary>
-    public string PageAccessConfigPath => "Configuration/page-access.json";
-
-    /// <summary>
     /// Registers client-specific services in the DI container.
     /// </summary>
     /// <param name="services">The service collection.</param>

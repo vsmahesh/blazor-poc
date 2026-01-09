@@ -1,6 +1,7 @@
 using System.Reflection;
+using BasicBlazor.Data.Extensions;
 
-namespace BasicBlazor.Data.Extensions;
+namespace BasicBlazor.Web.Extensions;
 
 /// <summary>
 /// Service for discovering and loading client extensions at runtime.
@@ -79,58 +80,6 @@ public class ExtensionLoader
         Console.WriteLine($"[ExtensionLoader] Extension assembly: {_activeExtension.ComponentAssembly.FullName}");
 
         return true;
-    }
-
-    /// <summary>
-    /// Gets the page access configuration file path for the active extension.
-    /// </summary>
-    /// <returns>The full path to the extension's page-access.json, or null if no extension is active.</returns>
-    public string? GetExtensionConfigPath()
-    {
-        if (_activeExtension == null)
-        {
-            return null;
-        }
-
-        var assemblyLocation = _activeExtension.ComponentAssembly.Location;
-        var assemblyDir = Path.GetDirectoryName(assemblyLocation);
-
-        if (string.IsNullOrEmpty(assemblyDir))
-        {
-            return null;
-        }
-
-        return Path.Combine(assemblyDir, _activeExtension.PageAccessConfigPath);
-    }
-
-    /// <summary>
-    /// Static helper method to get all extension assemblies for early registration (e.g., in Program.cs).
-    /// This method loads extension assemblies from disk and returns them.
-    /// Should be called during application startup before service configuration.
-    /// </summary>
-    /// <returns>Array of extension assemblies found, or empty array if none found.</returns>
-    public static Assembly[] GetExtensionAssemblies()
-    {
-        Console.WriteLine("[ExtensionLoader.Static] Getting extension assemblies for early registration...");
-
-        // First, explicitly load any extension assemblies from disk
-        LoadExtensionAssembliesFromDisk();
-
-        // Get all loaded assemblies
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-        // Find extension assemblies (naming convention: BasicBlazor.Extension.*)
-        var extensionAssemblies = assemblies
-            .Where(a => a.GetName().Name?.StartsWith("BasicBlazor.Extension.") == true)
-            .ToArray();
-
-        Console.WriteLine($"[ExtensionLoader.Static] Found {extensionAssemblies.Length} extension assemblies for registration");
-        foreach (var assembly in extensionAssemblies)
-        {
-            Console.WriteLine($"[ExtensionLoader.Static]   - {assembly.GetName().Name}");
-        }
-
-        return extensionAssemblies;
     }
 
     /// <summary>

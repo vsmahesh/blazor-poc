@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Reference to Data project for shared services and extension interface -->
+    <!-- Reference to Data project for extension interface and shared services -->
     <ProjectReference Include="..\BasicBlazor.Data\BasicBlazor.Data.csproj" />
   </ItemGroup>
 

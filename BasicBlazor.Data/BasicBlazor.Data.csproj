@@ -22,7 +22,8 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!-- Only copy base config when NO client is specified -->
+  <ItemGroup Condition="'$(Client)' == ''">
     <None Update="Configuration/page-access.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

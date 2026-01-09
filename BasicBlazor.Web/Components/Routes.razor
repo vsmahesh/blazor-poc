@@ -1,3 +1,4 @@
+@using BasicBlazor.Web.Extensions
 @using BasicBlazor.Data.Extensions
 @using System.Reflection
 
@@ -17,32 +18,9 @@
 
     protected override void OnInitialized()
     {
-        Console.WriteLine($"[Routes] OnInitialized - ActiveExtension: {ExtensionLoader.ActiveExtension?.ClientId ?? "NULL"}");
-
         if (ExtensionLoader.ActiveExtension != null)
         {
             _additionalAssemblies = new[] { ExtensionLoader.ActiveExtension.ComponentAssembly };
-            Console.WriteLine($"[Routes] Set additional assemblies: {ExtensionLoader.ActiveExtension.ComponentAssembly.FullName}");
-
-            // Debug: Verify routed components
-            var types = ExtensionLoader.ActiveExtension.ComponentAssembly.GetTypes();
-            var routedTypes = types.Where(t =>
-                t.GetCustomAttributes(typeof(Microsoft.AspNetCore.Components.RouteAttribute), false).Length > 0
-            ).ToList();
-
-            Console.WriteLine($"[Routes] Extension has {routedTypes.Count} routed components:");
-            foreach (var type in routedTypes)
-            {
-                var routeAttrs = type.GetCustomAttributes(typeof(Microsoft.AspNetCore.Components.RouteAttribute), false);
-                foreach (Microsoft.AspNetCore.Components.RouteAttribute routeAttr in routeAttrs)
-                {
-                    Console.WriteLine($"[Routes]   - {type.Name} -> {routeAttr.Template}");
-                }
-            }
-        }
-        else
-        {
-            Console.WriteLine("[Routes] No extension - using empty additional assemblies");
         }
     }
 }

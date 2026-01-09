@@ -59,61 +59,6 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Registers all Data layer services with extension support.
-    /// Discovers and initializes client extensions if present.
-    /// </summary>
-    /// <param name="services">The IServiceCollection to add services to.</param>
-    /// <param name="configuration">The application configuration containing the connection string.</param>
-    /// <returns>The IServiceCollection for method chaining.</returns>
-    /// <remarks>
-    /// This method:
-    /// - Registers all base data services via AddDataServices
-    /// - Discovers and loads client extensions (BasicBlazor.Extension.*)
-    /// - Replaces PageAccessService with ExtensionPageAccessService for config loading
-    /// - Calls extension's ConfigureServices if present
-    ///
-    /// Extension's page-access.json REPLACES the base configuration when present.
-    /// </remarks>
-    public static IServiceCollection AddDataServicesWithExtensions(
-        this IServiceCollection services,
-        IConfiguration configuration)
-    {
-        // 1. Register base data services first
-        services.AddDataServices(configuration);
-
-        // 2. Create and initialize extension loader
-        var extensionLoader = new ExtensionLoader();
-        extensionLoader.DiscoverExtension();
-
-        // 3. Register ExtensionLoader as Singleton
-        services.AddSingleton(extensionLoader);
-
-        // 4. Replace PageAccessService with ExtensionPageAccessService
-        // Remove the original PageAccessService registration
-        var pageAccessDescriptor = services.FirstOrDefault(d => d.ServiceType == typeof(PageAccessService));
-        if (pageAccessDescriptor != null)
-        {
-            services.Remove(pageAccessDescriptor);
-        }
-
-        // Register ExtensionPageAccessService as PageAccessService (Singleton)
-        // This will load extension's config if present, otherwise base config
-        services.AddSingleton<PageAccessService>(sp =>
-        {
-            var loader = sp.GetRequiredService<ExtensionLoader>();
-            return new ExtensionPageAccessService(loader);
-        });
-
-        // 5. Call extension's ConfigureServices if present
-        if (extensionLoader.ActiveExtension != null)
-        {
-            extensionLoader.ActiveExtension.ConfigureServices(services, configuration);
-        }
-
-        return services;
-    }
-
-    /// <summary>
     /// Applies Entity Framework Core migrations to the database.
     /// </summary>
     /// <param name="serviceProvider">The application service provider.</param>

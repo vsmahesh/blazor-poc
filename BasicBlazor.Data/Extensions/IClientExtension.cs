@@ -29,13 +29,6 @@ public interface IClientExtension
     Assembly ComponentAssembly { get; }
 
     /// <summary>
-    /// Gets the relative path to the extension's page-access.json file.
-    /// Path is relative to the assembly's base directory.
-    /// This file REPLACES the base page-access.json configuration.
-    /// </summary>
-    string PageAccessConfigPath { get; }
-
-    /// <summary>
     /// Registers extension-specific services in the DI container.
     /// Called during application startup after base services are registered.
     /// </summary>
