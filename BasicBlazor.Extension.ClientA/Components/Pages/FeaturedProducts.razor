@@ -1,0 +1,81 @@
+@page "/featured-products"
+@using Microsoft.AspNetCore.Authorization
+@using BasicBlazor.Extension.ClientA.Services
+@inject FeaturedProductsService ProductsService
+@attribute [Authorize(Policy = "RoleAccess")]
+
+<PageTitle>Featured Products - BasicBlazor</PageTitle>
+
+<div class="page-container">
+    <h1>Featured Products</h1>
+    <p class="role-requirements">Role requirements: <strong>User, Manager</strong></p>
+    <p class="lead">Exclusive selection of premium products for ClientA</p>
+
+    <div class="products-grid">
+        @foreach (var product in ProductsService.GetFeaturedProducts())
+        {
+            <div class="product-card">
+                <div class="product-icon">
+                    <span class="bi bi-star-fill text-warning"></span>
+                </div>
+                <h3 class="product-name">@product</h3>
+                <p class="product-label">Featured</p>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .product-card {
+        padding: 2rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%);
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .product-card:hover {
+        transform: translateY(-4px);
+        border-color: #ffc107;
+        box-shadow: 0 8px 16px rgba(255, 193, 7, 0.2);
+    }
+
+    .product-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .product-name {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #333;
+        margin: 0.5rem 0;
+    }
+
+    .product-label {
+        font-size: 0.875rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 0;
+    }
+
+    .lead {
+        color: #666;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+
+    .role-requirements {
+        color: #666;
+        font-size: 0.9rem;
+    }
+</style>

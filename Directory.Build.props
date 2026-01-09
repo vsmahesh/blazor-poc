@@ -1,0 +1,20 @@
+<Project>
+  <PropertyGroup>
+    <!-- Define the client parameter - can be overridden via command line -->
+    <!-- Usage: dotnet build -p:Client=ClientA -->
+    <!-- Default is empty (no client extension) -->
+    <Client Condition="'$(Client)' == ''"></Client>
+  </PropertyGroup>
+
+  <!-- Conditional project reference for BasicBlazor.Web when Client=ClientA -->
+  <ItemGroup Condition="'$(MSBuildProjectName)' == 'BasicBlazor.Web' AND '$(Client)' == 'ClientA'">
+    <ProjectReference Include="$(MSBuildThisFileDirectory)BasicBlazor.Extension.ClientA\BasicBlazor.Extension.ClientA.csproj" />
+  </ItemGroup>
+
+  <!-- Add more client conditions here as needed -->
+  <!-- Example for ClientB:
+  <ItemGroup Condition="'$(MSBuildProjectName)' == 'BasicBlazor.Web' AND '$(Client)' == 'ClientB'">
+    <ProjectReference Include="$(MSBuildThisFileDirectory)BasicBlazor.Extension.ClientB\BasicBlazor.Extension.ClientB.csproj" />
+  </ItemGroup>
+  -->
+</Project>

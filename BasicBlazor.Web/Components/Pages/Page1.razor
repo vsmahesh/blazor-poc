@@ -1,0 +1,16 @@
+@page "/page1"
+@attribute [Authorize(Policy = "RoleAccess")]
+@using Microsoft.AspNetCore.Authorization
+@using System.Security.Claims
+
+<PageTitle>Page 1 - BasicBlazor</PageTitle>
+
+<h1>Page 1</h1>
+<p class="role-requirements">Role requirements: <strong>User only</strong></p>
+
+<AuthorizeView>
+    <Authorized>
+        <p>Welcome, <strong>@context.User.Identity?.Name</strong>! Your role is: <strong>@context.User.FindFirst(ClaimTypes.Role)?.Value</strong></p>
+        <p>This page is accessible only to users with the User role.</p>
+    </Authorized>
+</AuthorizeView>

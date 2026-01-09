@@ -1,0 +1,46 @@
+@page "/page3"
+@attribute [Authorize(Policy = "RoleAccess")]
+@using Microsoft.AspNetCore.Authorization
+@using System.Security.Claims
+
+<PageTitle>Page 3 - BasicBlazor</PageTitle>
+
+<h1>Page 3</h1>
+<p class="role-requirements">Role requirements: <strong>User and Manager</strong></p>
+
+<AuthorizeView>
+    <Authorized>
+        <p>Welcome, <strong>@context.User.Identity?.Name</strong>! Your role is: <strong>@context.User.FindFirst(ClaimTypes.Role)?.Value</strong></p>
+        <p>This page is accessible to users with User or Manager roles.</p>
+
+        <div class="mt-4">
+            <h3>Permission-Based Feature</h3>
+            <AuthorizeView Policy="PERM:Page3:See_Button" Context="permContext">
+                <Authorized>
+                    <button class="btn btn-primary" @onclick="HandleSpecialAction">
+                        <i class="bi bi-star-fill"></i> Special Action Button
+                    </button>
+                    <p class="text-muted mt-2">
+                        <small>You have the "Page3:See_Button" permission!</small>
+                    </p>
+                </Authorized>
+                <NotAuthorized>
+                    <p class="text-muted">
+                        <small>
+                            <i class="bi bi-info-circle"></i>
+                            The special action button is hidden because you don't have the required permission.
+                        </small>
+                    </p>
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private void HandleSpecialAction()
+    {
+        // TODO: Implement special action logic
+        Console.WriteLine("Special action executed by user with Page3:See_Button permission!");
+    }
+}

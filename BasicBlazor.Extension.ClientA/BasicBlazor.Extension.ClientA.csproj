@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Reference to Data project for shared services and extension interface -->
+    <ProjectReference Include="..\BasicBlazor.Data\BasicBlazor.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Blazor component dependencies -->
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Copy extension's page-access.json to output directory -->
+    <None Update="Configuration\page-access.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

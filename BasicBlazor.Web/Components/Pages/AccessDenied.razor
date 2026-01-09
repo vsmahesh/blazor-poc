@@ -1,0 +1,48 @@
+@page "/access-denied"
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthStateProvider
+@inject PageAccessService PageAccessService
+@using System.Security.Claims
+
+<PageTitle>Access Denied - BasicBlazor</PageTitle>
+
+<div class="access-denied-container">
+    <h1>Access Denied</h1>
+    <p class="error-message">You do not have permission to access this page.</p>
+
+    @if (_isAuthenticated)
+    {
+        <p>Your current role: <strong>@_userRole</strong></p>
+        <p>You have access to the following pages:</p>
+        <ul>
+            @foreach (var pageRule in _allowedPages)
+            {
+                <li><a href="@pageRule.PagePath">@pageRule.DisplayName</a></li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Please <a href="/login">log in</a> to access protected pages.</p>
+    }
+</div>
+
+@code {
+    private bool _isAuthenticated = false;
+    private string _userRole = "";
+    private List<PageAccessRule> _allowedPages = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        _isAuthenticated = user.Identity?.IsAuthenticated ?? false;
+
+        if (_isAuthenticated)
+        {
+            _userRole = user.FindFirst(ClaimTypes.Role)?.Value ?? "Unknown";
+            _allowedPages = PageAccessService.GetAllowedPagesForRole(_userRole);
+        }
+    }
+}

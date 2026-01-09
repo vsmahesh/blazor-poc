@@ -1,0 +1,32 @@
+{
+  "pageAccess": [
+    {
+      "pagePath": "/page1",
+      "allowedRoles": ["User"],
+      "displayName": "Page 1",
+      "icon": "bi-1-circle-fill",
+      "order": 1
+    },
+    {
+      "pagePath": "/page2",
+      "allowedRoles": ["Manager"],
+      "displayName": "Page 2",
+      "icon": "bi-2-circle-fill",
+      "order": 2
+    },
+    {
+      "pagePath": "/page3",
+      "allowedRoles": ["User", "Manager"],
+      "displayName": "Page 3",
+      "icon": "bi-3-circle-fill",
+      "order": 3
+    },
+    {
+      "pagePath": "/page4",
+      "allowedRoles": ["User", "Manager", "Admin"],
+      "displayName": "Page 4",
+      "icon": "bi-4-circle-fill",
+      "order": 4
+    }
+  ]
+}

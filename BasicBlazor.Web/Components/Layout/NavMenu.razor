@@ -1,0 +1,49 @@
+@inject PageAccessService PageAccessService
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+
+<nav class="navbar">
+    <span class="navbar-brand">BasicBlazor</span>
+
+    <input type="checkbox" title="Navigation menu" class="navbar-toggler" id="navbar-toggler" />
+    <label class="navbar-toggler-label" for="navbar-toggler">
+        <span class="navbar-toggler-icon"></span>
+    </label>
+
+    <div class="navbar-menu" onclick="document.getElementById('navbar-toggler').checked = false">
+        <div class="nav-items-left">
+            <AuthorizeView Context="authContext">
+                <Authorized>
+                    @{
+                        var role = authContext.User.FindFirst(ClaimTypes.Role)?.Value;
+                        var allowedPages = !string.IsNullOrEmpty(role)
+                            ? PageAccessService.GetAllowedPagesForRole(role)
+                            : new List<PageAccessRule>();
+                    }
+                    @foreach (var pageRule in allowedPages)
+                    {
+                        <div class="nav-item">
+                            <NavLink class="nav-link" href="@pageRule.PagePath">
+                                <span class="bi @(string.IsNullOrEmpty(pageRule.Icon) ? "bi-file-earmark-text" : pageRule.Icon)-nav-menu" aria-hidden="true"></span> @pageRule.DisplayName
+                            </NavLink>
+                        </div>
+                    }
+                </Authorized>
+            </AuthorizeView>
+        </div>
+
+        <div class="nav-items-right">
+            <AuthorizeView Context="authContext">
+                <Authorized>
+                    <div class="nav-item">
+                        <NavLink class="nav-link" href="logout">
+                            <span class="bi bi-box-arrow-right-nav-menu" aria-hidden="true"></span> Sign Out
+                        </NavLink>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+        </div>
+    </div>
+</nav>
+
+

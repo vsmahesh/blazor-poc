@@ -1,0 +1,25 @@
+@page "/logout"
+@inject IHttpContextAccessor HttpContextAccessor
+@inject NavigationManager Navigation
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+
+@code {
+    [SupplyParameterFromQuery(Name = "expired")]
+    public bool SessionExpired { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var httpContext = HttpContextAccessor.HttpContext;
+        if (httpContext != null)
+        {
+            await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        }
+
+        var redirectUrl = SessionExpired
+            ? "/login?message=session-expired"
+            : "/login";
+
+        Navigation.NavigateTo(redirectUrl, forceLoad: true);
+    }
+}
