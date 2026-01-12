@@ -1,6 +1,7 @@
 @inject IConfiguration Configuration
+@inject AuthenticationStateProvider AuthStateProvider
 
-@if (IsEnabled)
+@if (IsEnabled && IsAuthenticated)
 {
     <script>
         window.SESSION_TIMEOUT_CONFIG = {
@@ -37,4 +38,11 @@
     private int TimeoutMinutes => Configuration.GetValue<int>("SessionTimeout:TimeoutMinutes", 5);
     private int WarningBeforeMinutes => Configuration.GetValue<int>("SessionTimeout:WarningBeforeMinutes", 1);
     private bool IsEnabled => Configuration.GetValue<bool>("SessionTimeout:Enabled", true);
+    private bool IsAuthenticated { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        IsAuthenticated = authState.User?.Identity?.IsAuthenticated ?? false;
+    }
 }
