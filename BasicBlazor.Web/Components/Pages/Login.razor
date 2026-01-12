@@ -16,6 +16,23 @@
 
 <PageTitle>Login - BasicBlazor</PageTitle>
 
+<style>
+    @@keyframes slideUpFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .password-entry-animated {
+        animation: slideUpFadeIn 0.4s ease-out;
+    }
+</style>
+
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4">
@@ -40,7 +57,7 @@
                     @* Stage 1: Username Entry *@
                     @if (_currentStage == LoginStage.UsernameEntry)
                     {
-                        <EditForm Model="@UsernameModel" OnValidSubmit="@HandleContinue" FormName="usernameForm">
+                        <EditForm Model="@UsernameModel" OnValidSubmit="@HandleContinue" FormName="usernameForm" Enhance>
                             <DataAnnotationsValidator />
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username or Email</label>
@@ -49,6 +66,7 @@
                                           class="form-control"
                                           maxlength="100"
                                           placeholder="Enter your username or email"
+                                          type = "text"
                                           autofocus />
                                 <ValidationMessage For="@(() => UsernameModel!.Username)" />
                             </div>
@@ -78,17 +96,18 @@
                     @* Stage 2: Password Entry (Native Login) *@
                     @if (_currentStage == LoginStage.PasswordEntry)
                     {
-                        <EditForm Model="@LoginModel" OnValidSubmit="@HandleLogin" FormName="loginForm">
+                        <EditForm Model="@LoginModel" OnValidSubmit="@HandleLogin" FormName="loginForm" Enhance>
                             <DataAnnotationsValidator />
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
                                 <InputText id="username"
                                           @bind-Value="LoginModel!.Username"
                                           class="form-control"
+                                          type = "text"
                                           readonly />
                             </div>
 
-                            <div class="mb-3">
+                            <div class="mb-3 password-entry-animated">
                                 <label for="password" class="form-label">Password</label>
                                 <InputText type="password"
                                           id="password"
@@ -100,10 +119,10 @@
                                 <ValidationMessage For="@(() => LoginModel!.Password)" />
                             </div>
 
-                            <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-secondary" @onclick="HandleBack" disabled="@_isLoading">
+                            <div class="d-flex gap-2 password-entry-animated">
+                                <a href="/login" class="btn btn-secondary">
                                     Back
-                                </button>
+                                </a>
                                 <button type="submit" class="btn btn-primary flex-grow-1" disabled="@_isLoading">
                                     @if (_isLoading)
                                     {
@@ -240,18 +259,6 @@
         // Copy username from Stage 1 model to Stage 2 model
         LoginModel!.Username = UsernameModel.Username;
         _currentStage = LoginStage.PasswordEntry;
-        _errorMessage = string.Empty;
-    }
-
-    /// <summary>
-    /// Handles the Back button click from Stage 2 (password entry).
-    /// Returns to Stage 1 (username entry) while preserving the username.
-    /// </summary>
-    private void HandleBack()
-    {
-        // Copy username back from Stage 2 model to Stage 1 model
-        UsernameModel!.Username = LoginModel!.Username;
-        _currentStage = LoginStage.UsernameEntry;
         _errorMessage = string.Empty;
     }
 
