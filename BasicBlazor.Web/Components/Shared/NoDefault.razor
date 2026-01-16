@@ -1,0 +1,11 @@
+@*
+    Marker component used with OverridableComponent to indicate no default should be rendered.
+    Usage: <OverridableComponent TDefault="NoDefault" ComponentKey="LoginFooter" />
+*@
+@using Microsoft.AspNetCore.Components
+@implements IComponent
+
+@code {
+    void IComponent.Attach(RenderHandle renderHandle) { }
+    Task IComponent.SetParametersAsync(ParameterView parameters) => Task.CompletedTask;
+}

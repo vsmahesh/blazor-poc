@@ -1,0 +1,42 @@
+@using BasicBlazor.Data.Extensions
+@using Microsoft.AspNetCore.Components
+@typeparam TDefault where TDefault : IComponent
+@inject IComponentResolver ComponentResolver
+
+@*
+    Renders the override component if registered, otherwise renders TDefault.
+    Use TDefault="NoDefault" to render nothing when no override exists.
+*@
+@if (_componentToRender != null)
+{
+    <DynamicComponent Type="@_componentToRender" Parameters="@Parameters" />
+}
+
+@code {
+    /// <summary>
+    /// The unique key identifying this component slot.
+    /// Extensions use this key to register overrides.
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string ComponentKey { get; set; } = "";
+
+    /// <summary>
+    /// Optional parameters to pass to the rendered component.
+    /// </summary>
+    [Parameter]
+    public IDictionary<string, object>? Parameters { get; set; }
+
+    private Type? _componentToRender;
+
+    protected override void OnParametersSet()
+    {
+        var overrideType = ComponentResolver.GetOverride(ComponentKey);
+
+        if (overrideType != null)
+            _componentToRender = overrideType;
+        else if (typeof(TDefault) != typeof(NoDefault))
+            _componentToRender = typeof(TDefault);
+        else
+            _componentToRender = null;
+    }
+}

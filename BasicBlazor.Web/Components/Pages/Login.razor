@@ -38,7 +38,9 @@
         <div class="col-md-6 col-lg-4">
             <div class="card shadow">
                 <div class="card-body">
-                    <h2 class="card-title text-center mb-4">Login</h2>
+                    <h2 class="card-title text-center mb-4">
+                        <OverridableComponent TDefault="DefaultAppBrand" ComponentKey="AppBrand" /> Login
+                    </h2>
 
                     @if (!string.IsNullOrEmpty(_errorMessage))
                     {
@@ -70,7 +72,6 @@
                                           autofocus />
                                 <ValidationMessage For="@(() => UsernameModel!.Username)" />
                             </div>
-
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-primary" disabled="@_isLoading">
                                     @if (_isLoading)
@@ -84,8 +85,7 @@
                                     }
                                 </button>
                             </div>
-                        </EditForm>
-
+                        </EditForm>                        
                         <div class="mt-3 text-center">
                             <small class="text-muted">
                                 Enter your email for SSO login, or username for native authentication.
@@ -143,6 +143,9 @@
                         <p class="mb-1">admin/Admin123! | manager/Manager123! | user/User123!</p>
                         <p class="mb-0"><em>Tip: Enter username for native login, or email (e.g., admin@example.com) for SSO.</em></p>
                     </div>
+
+                    @* Extension point for client-specific login footer *@
+                    <OverridableComponent TDefault="NoDefault" ComponentKey="LoginFooter" />
                 </div>
             </div>
         </div>

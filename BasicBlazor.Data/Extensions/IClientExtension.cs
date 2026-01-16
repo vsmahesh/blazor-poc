@@ -35,4 +35,11 @@ public interface IClientExtension
     /// <param name="services">The service collection to register services in.</param>
     /// <param name="configuration">The application configuration.</param>
     void ConfigureServices(IServiceCollection services, IConfiguration configuration);
+
+    /// <summary>
+    /// Registers component overrides with the resolver.
+    /// Called after all services are registered and the resolver is available.
+    /// </summary>
+    /// <param name="resolver">The component resolver for registering overrides.</param>
+    void RegisterComponentOverrides(IComponentResolver resolver);
 }

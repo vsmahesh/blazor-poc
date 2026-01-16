@@ -43,4 +43,17 @@ public class ClientAExtension : IClientExtension
         // - services.AddSingleton<ClientAConfigService>();
         // - Could also inject AppDbContext for database operations
     }
+
+    /// <summary>
+    /// Registers component overrides for Client A.
+    /// </summary>
+    /// <param name="resolver">The component resolver.</param>
+    public void RegisterComponentOverrides(IComponentResolver resolver)
+    {
+        // Override the app brand on login page
+        resolver.RegisterOverride("AppBrand", typeof(Components.ClientAAppBrand));
+
+        // Add a login footer (no default exists, so this adds new content)
+        resolver.RegisterOverride("LoginFooter", typeof(Components.LoginFooter));
+    }
 }

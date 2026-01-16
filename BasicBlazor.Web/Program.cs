@@ -30,10 +30,17 @@ builder.Services.AddDataServices(builder.Configuration);
 // Register extension loader as singleton
 builder.Services.AddSingleton(extensionLoader);
 
+// Register ComponentResolver as singleton for component overrides
+var componentResolver = new ComponentResolver();
+builder.Services.AddSingleton<IComponentResolver>(componentResolver);
+
 // Call extension's ConfigureServices if present (extension registration happens in Web layer)
 if (extensionLoader.ActiveExtension != null)
 {
     extensionLoader.ActiveExtension.ConfigureServices(builder.Services, builder.Configuration);
+
+    // Register component overrides after services are configured
+    extensionLoader.ActiveExtension.RegisterComponentOverrides(componentResolver);
 }
 
 // Add authentication services
